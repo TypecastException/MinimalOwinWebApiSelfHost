@@ -25,26 +25,26 @@ namespace MinimalOwinWebApiSelfHost.OAuthServerProvider
 
         public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
         {
-            var userManager = context.OwinContext.GetUserManager<ApplicationUserManager>();
-            ApplicationUser user = await userManager.FindAsync(context.UserName, context.Password);
-
-            if (user == null)
+            if (context.Password != "password")
             {
                 context.SetError("invalid_grant", "The user name or password is incorrect.");
+                context.Rejected();
                 return;
             }
+            ClaimsIdentity oAuthIdentity = new ClaimsIdentity(context.Options.AuthenticationType);
+            oAuthIdentity.AddClaim(new Claim("user_name", context.UserName));
+            //oAuthIdentity.AddClaim(new Claim(ClaimTypes.Role, "Admin"));
 
-            ClaimsIdentity oAuthIdentity = await user.GenerateUserIdentityAsync(userManager,
-                OAuthDefaults.AuthenticationType);
+            //IDictionary<string, string> authProperties = new Dictionary<string, string>
+            //{
+            //    { "userName", context.UserName },
+            //    {"role", "Admin"}
+            //};
 
-            IDictionary<string, string> authProperties = new Dictionary<string, string>
-            {
-                { "userName", user.UserName }
-            };
-
-            AuthenticationProperties properties = new AuthenticationProperties(authProperties);
-            AuthenticationTicket ticket = new AuthenticationTicket(oAuthIdentity, properties);
-            context.Validated(ticket);
+            //AuthenticationProperties properties = new AuthenticationProperties(authProperties);
+            //var ticket = new AuthenticationTicket(oAuthIdentity, properties);
+            //context.Validated(ticket);
+            context.Validated(oAuthIdentity);
         }
     }
 }
