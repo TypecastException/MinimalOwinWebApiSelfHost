@@ -6,14 +6,26 @@ using System.Threading.Tasks;
 
 // Add using:
 using System.Data.Entity;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace MinimalOwinWebApiSelfHost.Models
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext() : base("MyDatabase")
         {
 
+        }
+
+        public static ApplicationDbContext Create()
+        {
+            return new ApplicationDbContext();
+        }
+
+        static ApplicationDbContext()
+        {
+            Database.SetInitializer(new ApplicationDbInitializer());
         }
 
         public IDbSet<Company> Companies { get; set; }
@@ -24,10 +36,22 @@ namespace MinimalOwinWebApiSelfHost.Models
     {
         protected override void Seed(ApplicationDbContext context)
         {
-            base.Seed(context);
             context.Companies.Add(new Company { Name = "Microsoft" });
-            context.Companies.Add(new Company { Name = "Google" });
             context.Companies.Add(new Company { Name = "Apple" });
+            context.Companies.Add(new Company { Name = "Google" });
+            context.SaveChanges();
+
+            var mgr = new ApplicationUserManager(new ApplicationUserStore(context));
+
+            var user = new ApplicationUser
+            {
+                UserName = "john@example.com",
+                Email = "john@example.com",
+                FirstName = "John",
+                LastName = "Atten"
+            };
+            mgr.Create(user, "Password@123");
+            mgr.SetLockoutEnabled(user.Id, false);
         }
     }
 }
