@@ -11,7 +11,7 @@ using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace MinimalOwinWebApiSelfHost.Models
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+    public class ApplicationDbContext : DbContext
     {
         public ApplicationDbContext()
             : base("MyDatabase")
@@ -41,18 +41,6 @@ namespace MinimalOwinWebApiSelfHost.Models
             context.Companies.Add(new Company { Name = "Apple" });
             context.Companies.Add(new Company { Name = "Google" });
             context.SaveChanges();
-
-            //var mgr = new ApplicationUserManager(new ApplicationUserStore(context));
-
-            //var user = new ApplicationUser
-            //{
-            //    UserName = "john@example.com",
-            //    Email = "john@example.com",
-            //    FirstName = "John",
-            //    LastName = "Atten"
-            //};
-            //mgr.Create(user, "Password@123");
-            //mgr.SetLockoutEnabled(user.Id, false);
         }
     }
 }

@@ -16,24 +16,16 @@ namespace MinimalOwinWebApiSelfHost
         // This method is required by Katana:
         public void Configuration(IAppBuilder app)
         {
-
-
             ConfigureIdentity(app);
             var builder = (Microsoft.Owin.Builder.AppBuilder)app;
 
             var webApiConfiguration = ConfigureWebApi();
             app.UseWebApi(webApiConfiguration);
-
         }
 
 
         private void ConfigureIdentity(IAppBuilder app)
         {
-            //// Configure the db context and user manager to use a single instance per request
-            //app.CreatePerOwinContext(ApplicationDbContext.Create);
-            //app.CreatePerOwinContext<ApplicationUserManager>(ApplicationUserManager.Create);
-            //app.CreatePerOwinContext<ApplicationRoleManager>(ApplicationRoleManager.Create);
-
             var OAuthOptions = new OAuthAuthorizationServerOptions
             {
                 TokenEndpointPath = new PathString("/Token"),
