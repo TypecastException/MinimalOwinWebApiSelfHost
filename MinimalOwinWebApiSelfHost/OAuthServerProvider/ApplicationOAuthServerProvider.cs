@@ -42,7 +42,8 @@ namespace MinimalOwinWebApiSelfHost.OAuthServerProvider
             ClaimsIdentity identity = 
                 new ClaimsIdentity(context.Options.AuthenticationType);
             identity.AddClaim(new Claim("user_name", context.UserName));
-
+            identity.AddClaim(new Claim(ClaimTypes.Role, "Admin"));
+          
             // Identity info will ultimatly be encoded into an Access Token
             // as a result of this call:
             context.Validated(identity);
