@@ -19,11 +19,6 @@ namespace MinimalOwinWebApiSelfHost.Models
 
         }
 
-        public static ApplicationDbContext Create()
-        {
-            return new ApplicationDbContext();
-        }
-
         static ApplicationDbContext()
         {
             Database.SetInitializer(new ApplicationDbInitializer());
@@ -33,7 +28,8 @@ namespace MinimalOwinWebApiSelfHost.Models
     }
 
 
-    public class ApplicationDbInitializer : DropCreateDatabaseAlways<ApplicationDbContext>
+    public class ApplicationDbInitializer 
+        : DropCreateDatabaseAlways<ApplicationDbContext>
     {
         protected override void Seed(ApplicationDbContext context)
         {

@@ -16,15 +16,14 @@ namespace MinimalOwinWebApiSelfHost
         // This method is required by Katana:
         public void Configuration(IAppBuilder app)
         {
-            ConfigureIdentity(app);
-            var builder = (Microsoft.Owin.Builder.AppBuilder)app;
+            ConfigureAuth(app);
 
             var webApiConfiguration = ConfigureWebApi();
             app.UseWebApi(webApiConfiguration);
         }
 
 
-        private void ConfigureIdentity(IAppBuilder app)
+        private void ConfigureAuth(IAppBuilder app)
         {
             var OAuthOptions = new OAuthAuthorizationServerOptions
             {

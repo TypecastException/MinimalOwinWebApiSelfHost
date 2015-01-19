@@ -12,7 +12,7 @@ using System.Data.Entity;
 
 namespace MinimalOwinWebApiSelfHost.Controllers
 {
-    [Authorize]
+    [Authorize(Roles="Admin")]
     public class CompaniesController : ApiController
     {
         ApplicationDbContext _Db = new ApplicationDbContext();
