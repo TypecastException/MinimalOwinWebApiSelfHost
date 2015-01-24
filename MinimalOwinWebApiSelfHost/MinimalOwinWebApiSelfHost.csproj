@@ -106,6 +106,7 @@
     <Compile Include="Controllers\CompaniesController.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
     <Compile Include="Models\Company.cs" />
+    <Compile Include="Models\AuthModels.cs" />
     <Compile Include="OAuthServerProvider\ApplicationOAuthServerProvider.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
