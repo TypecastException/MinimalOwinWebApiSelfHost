@@ -45,7 +45,8 @@ namespace MinimalOwinWebApiSelfHost.Models
     {
         public string CreateHash(string password)
         {
-            // FOR DEMO ONLY! Use a standard method or crypto library to do this for real:
+            // FOR DEMO ONLY! Use a standard method or 
+            // crypto library to do this for real:
             char[] chars = password.ToArray();
             char[] hash = chars.Reverse().ToArray();
             return new string(hash);
@@ -66,7 +67,8 @@ namespace MinimalOwinWebApiSelfHost.Models
         {
             if (await UserExists(user))
             {
-                throw new Exception("A user with that Email address already exists");
+                throw new Exception(
+                    "A user with that Email address already exists");
             }
             var hasher = new MyPasswordHasher();
             user.PasswordHash = hasher.CreateHash(password).ToString();
@@ -77,20 +79,26 @@ namespace MinimalOwinWebApiSelfHost.Models
 
         public async Task<MyUser> FindByEmailAsync(string email)
         {
-            var user = _db.Users.Include(c => c.Claims).FirstOrDefaultAsync(u => u.Email == email);
-            return await _db.Users.FirstOrDefaultAsync(u => u.Email == email);
+            var user = _db.Users
+                .Include(c => c.Claims)
+                .FirstOrDefaultAsync(u => u.Email == email);
+
+            return await _db.Users
+                .FirstOrDefaultAsync(u => u.Email == email);
         }
 
 
         public async Task<MyUser> FindByIdAsync(string userId)
         {
-            return await _db.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            return await _db.Users
+                .FirstOrDefaultAsync(u => u.Id == userId);
         }
 
 
         public async Task<bool> UserExists(MyUser user)
         {
-            return await _db.Users.AnyAsync(u => u.Id == user.Id || u.Email == user.Email);
+            return await _db.Users
+                .AnyAsync(u => u.Id == user.Id || u.Email == user.Email);
         }
 
 

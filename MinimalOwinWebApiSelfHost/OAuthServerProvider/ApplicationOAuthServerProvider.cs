@@ -28,9 +28,12 @@ namespace MinimalOwinWebApiSelfHost.OAuthServerProvider
         public override async Task GrantResourceOwnerCredentials(
             OAuthGrantResourceOwnerCredentialsContext context)
         {
+            // Retrieve user from database:
             var store = new MyUserStore(new ApplicationDbContext());
             var user = await store.FindByEmailAsync(context.UserName);
-            if(!store.PasswordIsValid(user, context.Password))
+
+            // Validate user/password:
+            if(user == null || !store.PasswordIsValid(user, context.Password))
             {
                 context.SetError(
                     "invalid_grant", "The user name or password is incorrect.");
@@ -38,6 +41,7 @@ namespace MinimalOwinWebApiSelfHost.OAuthServerProvider
                 return;
             }
 
+            // Add claims associated with this user to the ClaimsIdentity object:
             var identity = new ClaimsIdentity(context.Options.AuthenticationType);
             foreach(var userClaim in user.Claims)
             {

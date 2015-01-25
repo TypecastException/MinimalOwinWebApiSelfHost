@@ -6,9 +6,6 @@ using System.Threading.Tasks;
 
 // Add using:
 using System.Data.Entity;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.EntityFramework;
-using System.Data.Entity.ModelConfiguration;
 using System.Security.Claims;
 
 namespace MinimalOwinWebApiSelfHost.Models
@@ -29,24 +26,6 @@ namespace MinimalOwinWebApiSelfHost.Models
         public IDbSet<Company> Companies { get; set; }
         public IDbSet<MyUser> Users { get; set; }
         public IDbSet<MyUserClaim> Claims { get; set; }
-
-        //protected override void OnModelCreating(DbModelBuilder modelBuilder)
-        //{
-        //    base.OnModelCreating(modelBuilder);
-
-        //    modelBuilder.Entity<User>().HasMany<UserRole>((User u) => u.Claims);
-        //    modelBuilder.Entity<UserRole>().HasKey((UserRole r) =>
-        //        new { UserId = r.UserId, RoleId = r.RoleId }).ToTable("UserRoles");
-        //}
-
-        //protected override void OnModelCreating(DbModelBuilder modelBuilder)
-        //{
-        //    base.OnModelCreating(modelBuilder);
-
-        //    EntityTypeConfiguration<MyUserClaim> table1 = modelBuilder.Entity<MyUserClaim>().ToTable("MyUserClaims");
-        //    table1.HasRequired<MyUser>((MyUserClaim u) => u.User);
-        //}
-
     }
 
 
@@ -60,6 +39,7 @@ namespace MinimalOwinWebApiSelfHost.Models
             context.Companies.Add(new Company { Name = "Google" });
             context.SaveChanges();
 
+            // Set up two initial users with different role claims:
             var john = new MyUser { Email = "john@example.com" };
             var jimi = new MyUser { Email = "jimi@Example.com" };
 
@@ -72,7 +52,6 @@ namespace MinimalOwinWebApiSelfHost.Models
             var store = new MyUserStore(context);
             await store.AddUserAsync(john, "JohnsPassword");
             await store.AddUserAsync(jimi, "JimisPassword");
-
         }
     }
 }

@@ -15,18 +15,17 @@ namespace MinimalOwinWebApiSelfHost.Controllers
     [Authorize(Roles="Admin")]
     public class CompaniesController : ApiController
     {
-        ApplicationDbContext _Db = new ApplicationDbContext();
-
+        ApplicationDbContext dbContext = new ApplicationDbContext();
 
         public IEnumerable<Company> Get()
         {
-            return _Db.Companies;
+            return dbContext.Companies;
         }
 
 
         public async Task<Company> Get(int id)
         {
-            var company = await _Db.Companies.FirstOrDefaultAsync(c => c.Id == id);
+            var company = await dbContext.Companies.FirstOrDefaultAsync(c => c.Id == id);
             if (company == null)
             {
                 throw new HttpResponseException(
@@ -42,15 +41,15 @@ namespace MinimalOwinWebApiSelfHost.Controllers
             {
                 return BadRequest("Argument Null");
             }
-            var companyExists = await _Db.Companies.AnyAsync(c => c.Id == company.Id);
+            var companyExists = await dbContext.Companies.AnyAsync(c => c.Id == company.Id);
 
             if (companyExists)
             {
                 return BadRequest("Exists");
             }
 
-            _Db.Companies.Add(company);
-            await _Db.SaveChangesAsync();
+            dbContext.Companies.Add(company);
+            await dbContext.SaveChangesAsync();
             return Ok();
         }
 
@@ -61,7 +60,7 @@ namespace MinimalOwinWebApiSelfHost.Controllers
             {
                 return BadRequest("Argument Null");
             }
-            var existing = await _Db.Companies.FirstOrDefaultAsync(c => c.Id == company.Id);
+            var existing = await dbContext.Companies.FirstOrDefaultAsync(c => c.Id == company.Id);
 
             if (existing == null)
             {
@@ -69,20 +68,20 @@ namespace MinimalOwinWebApiSelfHost.Controllers
             }
 
             existing.Name = company.Name;
-            await _Db.SaveChangesAsync();
+            await dbContext.SaveChangesAsync();
             return Ok();
         }
 
 
         public async Task<IHttpActionResult> Delete(int id)
         {
-            var company = await _Db.Companies.FirstOrDefaultAsync(c => c.Id == id);
+            var company = await dbContext.Companies.FirstOrDefaultAsync(c => c.Id == id);
             if (company == null)
             {
                 return NotFound();
             }
-            _Db.Companies.Remove(company);
-            await _Db.SaveChangesAsync();
+            dbContext.Companies.Remove(company);
+            await dbContext.SaveChangesAsync();
             return Ok();
         }
     }
