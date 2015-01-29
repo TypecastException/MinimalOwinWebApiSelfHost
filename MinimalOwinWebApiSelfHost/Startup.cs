@@ -46,6 +46,8 @@ namespace MinimalOwinWebApiSelfHost
                 "DefaultApi",
                 "api/{controller}/{id}",
                 new { id = RouteParameter.Optional });
+            // Uncomment the following line to use when hosted in IIS/IISExpress (add Microsoft.AspNet.WebApi.Owin nuget package)
+            //config.Filters.Add(new System.Web.Http.HostAuthenticationFilter("Bearer"));
             return config;
         }
     }
