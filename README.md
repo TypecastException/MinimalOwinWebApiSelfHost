@@ -16,5 +16,10 @@ The next branch, `auth-minimal` is referred to in the post [ASP.NET Web Api: Und
 The next branch, auth-db is referred to in the post [ASP.NET Web Api: Understanding OWIN/Katana Authentication/Authorization Part II: Models and Persistence](http://typecastexception.com/post/2015/01/25/ASPNET-Web-Api-Understanding-OWINKatana-AuthenticationAuthorization-Part-II-Models-and-Persistence.aspx)
 
 * **Branch: auth-db -** Adds entity models and database persistence.
+* 
+
+The Final Branch, `auth-identity` is referred to in the post [ASP.NET Web API: Understanding OWIN/Katana Authentication/Authorization Part III: Adding Identity](http://typecastexception.com/post/2015/02/15/ASPNET-Web-API-Understanding-OWINKatana-AuthenticationAuthorization-Part-III-Adding-Identity.aspx)
+
+* **Branch: auth-identity ** Replace bare-bones roll-our-own implementation with a minimal Identity framework implementation.
 
 
