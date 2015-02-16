@@ -8,24 +8,33 @@ using System.Threading.Tasks;
 using System.Data.Entity;
 using System.Security.Claims;
 
+// Add THESE to use Identity and Entity Framework:
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
+
 namespace MinimalOwinWebApiSelfHost.Models
 {
-    public class ApplicationDbContext : DbContext
+    // Derive from IdentityDbContext:
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext()
-            : base("MyDatabase")
-        {
-
-        }
+            : base("MyDatabase") { }
 
         static ApplicationDbContext()
         {
-            Database.SetInitializer(new ApplicationDbInitializer());
+            Database.SetInitializer(
+                new ApplicationDbInitializer());
         }
 
+        // Add a static Create() method:
+        public static ApplicationDbContext Create()
+        {
+            return new ApplicationDbContext();
+        }
+
+        // We still need a DbSet for our Companies 
+        // (and any other domain objects):
         public IDbSet<Company> Companies { get; set; }
-        public IDbSet<MyUser> Users { get; set; }
-        public IDbSet<MyUserClaim> Claims { get; set; }
     }
 
 
@@ -40,18 +49,37 @@ namespace MinimalOwinWebApiSelfHost.Models
             context.SaveChanges();
 
             // Set up two initial users with different role claims:
-            var john = new MyUser { Email = "john@example.com" };
-            var jimi = new MyUser { Email = "jimi@Example.com" };
+            var john = new ApplicationUser 
+            { 
+                Email = "john@example.com", 
+                UserName = "john@example.com" 
+            };
+            var jimi = new ApplicationUser 
+            { 
+                Email = "jimi@Example.com", 
+                UserName = "jimi@example.com" 
+            };
 
-            john.Claims.Add(new MyUserClaim { ClaimType = ClaimTypes.Name, UserId = john.Id, ClaimValue = john.Email });
-            john.Claims.Add(new MyUserClaim { ClaimType = ClaimTypes.Role, UserId = john.Id, ClaimValue = "Admin" });
+            // Introducing...the UserManager:
+            var manager = new ApplicationUserManager(
+                new UserStore<ApplicationUser>(context));
 
-            jimi.Claims.Add(new MyUserClaim { ClaimType = ClaimTypes.Name, UserId = jimi.Id, ClaimValue = jimi.Email });
-            jimi.Claims.Add(new MyUserClaim { ClaimType = ClaimTypes.Role, UserId = john.Id, ClaimValue = "User" });
+            var result1 = await manager.CreateAsync(john, "JohnsPassword");
+            var result2 = await manager.CreateAsync(jimi, "JimisPassword");
 
-            var store = new MyUserStore(context);
-            await store.AddUserAsync(john, "JohnsPassword");
-            await store.AddUserAsync(jimi, "JimisPassword");
+            // Add claims for user #1:
+            await manager.AddClaimAsync(john.Id, 
+                new Claim(ClaimTypes.Name, "john@example.com"));
+
+            await manager.AddClaimAsync(john.Id, 
+                new Claim(ClaimTypes.Role, "Admin"));
+
+            // Add claims for User #2:
+            await manager.AddClaimAsync(jimi.Id, 
+                new Claim(ClaimTypes.Name, "jimi@example.com"));
+
+            await manager.AddClaimAsync(jimi.Id, 
+                new Claim(ClaimTypes.Role, "User"));
         }
     }
 }

@@ -10,12 +10,25 @@ using MinimalOwinWebApiSelfHost.Models;
 // Add these usings:
 using System.Data.Entity;
 
+// Add this to get access to the simplified Get<T> for OwinContext:
+using Microsoft.AspNet.Identity.Owin;
+
 namespace MinimalOwinWebApiSelfHost.Controllers
 {
     [Authorize(Roles="Admin")]
     public class CompaniesController : ApiController
     {
-        ApplicationDbContext dbContext = new ApplicationDbContext();
+        // Ditch THIS:
+        //ApplicationDbContext dbContext = new ApplicationDbContext();
+
+        // Replace with something like THIS:
+        ApplicationDbContext dbContext
+        {
+            get
+            {
+                return Request.GetOwinContext().Get<ApplicationDbContext>();
+            }
+        }
 
         public IEnumerable<Company> Get()
         {

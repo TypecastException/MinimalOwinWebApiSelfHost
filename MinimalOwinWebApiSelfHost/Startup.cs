@@ -8,7 +8,6 @@ using MinimalOwinWebApiSelfHost.OAuthServerProvider;
 using Microsoft.Owin.Security.OAuth;
 using Microsoft.Owin;
 
-
 namespace MinimalOwinWebApiSelfHost
 {
     public class Startup
@@ -25,6 +24,10 @@ namespace MinimalOwinWebApiSelfHost
 
         private void ConfigureAuth(IAppBuilder app)
         {
+            // Create per OWIN Context:
+            app.CreatePerOwinContext<ApplicationDbContext>(ApplicationDbContext.Create);
+            app.CreatePerOwinContext<ApplicationUserManager>(ApplicationUserManager.Create);
+
             var OAuthOptions = new OAuthAuthorizationServerOptions
             {
                 TokenEndpointPath = new PathString("/Token"),

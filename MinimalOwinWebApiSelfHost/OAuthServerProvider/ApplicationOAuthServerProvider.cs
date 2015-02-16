@@ -10,6 +10,8 @@ using Microsoft.Owin.Security;
 using System.Security.Claims;
 using MinimalOwinWebApiSelfHost.Models;
 
+// Add to use Identity:
+using Microsoft.AspNet.Identity.Owin;
 
 namespace MinimalOwinWebApiSelfHost.OAuthServerProvider
 {
@@ -28,12 +30,12 @@ namespace MinimalOwinWebApiSelfHost.OAuthServerProvider
         public override async Task GrantResourceOwnerCredentials(
             OAuthGrantResourceOwnerCredentialsContext context)
         {
-            // Retrieve user from database:
-            var store = new MyUserStore(new ApplicationDbContext());
-            var user = await store.FindByEmailAsync(context.UserName);
+            // ** Use extension method to get a reference to the user manager from the Owin Context:
+            var manager = context.OwinContext.GetUserManager<ApplicationUserManager>();
 
-            // Validate user/password:
-            if(user == null || !store.PasswordIsValid(user, context.Password))
+            // UserManager allows us to retrieve use with name/password combo:
+            var user = await manager.FindAsync(context.UserName, context.Password);
+            if (user == null)
             {
                 context.SetError(
                     "invalid_grant", "The user name or password is incorrect.");
@@ -43,11 +45,11 @@ namespace MinimalOwinWebApiSelfHost.OAuthServerProvider
 
             // Add claims associated with this user to the ClaimsIdentity object:
             var identity = new ClaimsIdentity(context.Options.AuthenticationType);
-            foreach(var userClaim in user.Claims)
+            foreach (var userClaim in user.Claims)
             {
                 identity.AddClaim(new Claim(userClaim.ClaimType, userClaim.ClaimValue));
             }
-            
+
             context.Validated(identity);
         }
     }
